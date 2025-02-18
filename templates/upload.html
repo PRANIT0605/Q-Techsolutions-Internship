@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Resumes</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 800px;
+            margin-top: 50px;
+            text-align: center;
+        }
+        .drop-zone {
+            border: 2px dashed #007bff;
+            padding: 40px;
+            cursor: pointer;
+            background-color: #e9ecef;
+            border-radius: 10px;
+        }
+        .drop-zone--over {
+            border-color: #28a745;
+        }
+        .drop-zone:hover {
+            background-color: #d6d8db;
+        }
+        .file-list {
+            margin-top: 20px;
+            text-align: left;
+        }
+        .progress {
+            margin-top: 20px;
+            height: 25px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-4">Upload Resumes</h1>
+        <p class="lead">Drag and drop resumes here or click to upload.</p>
+        
+        <form id="uploadForm">
+            <input type="file" id="fileInput" name="resume" multiple style="display: none;">
+            <div id="dropZone" class="drop-zone">
+                <span>Drop files here or click to select</span>
+            </div>
+            <div id="progressBar" class="progress d-none">
+                <div class="progress-bar" role="progressbar" style="width: 0%"></div>
+            </div>
+        <ul id="fileList" class="file-list list-group mt-3"></ul>
+        <div class="mt-3">
+            <button type="submit" id="uploadBtn" class="btn btn-success">
+                <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                Upload Files
+            </button>
+            <button type="button" id="clearBtn" class="btn btn-outline-secondary ms-2" onclick="clearFileList()">
+                Clear List
+            </button>
+        </div>
+        </form>
+        
+        <div class="mt-3">
+            <a href="{{ url_for('view_resumes') }}" class="btn btn-primary me-2">View Uploaded Resumes</a>
+            <a href="{{ url_for('home') }}" class="btn btn-outline-secondary">Back to Home</a>
+        </div>
+
+    </div>
+    
+    <script>
+        function clearFileList() {
+            document.getElementById('fileList').innerHTML = '';
+            document.getElementById('fileInput').value = '';
+        }
+    </script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+
+</body>
+</html>

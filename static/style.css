@@ -1,0 +1,62 @@
+body {
+    background-color: #f8f9fa;
+}
+
+.container {
+    max-width: 800px;
+    margin-top: 50px;
+    text-align: center;
+}
+
+.btn-custom {
+    width: 100%;
+    margin: 10px 0;
+    padding: 15px;
+    font-size: 1.2em;
+}
+
+.resume-card {
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.resume-preview {
+    height: 300px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin-top: 10px;
+    background: #f8f9fa;
+}
+
+.loading-spinner {
+    display: none;
+    margin: 20px auto;
+}
+
+/* New styles for resume checkboxes */
+.resume-card .form-check {
+    margin-bottom: 15px;
+}
+
+.resume-card .form-check-input {
+    margin-right: 10px;
+    margin-top: 0.3em;
+}
+
+.resume-card .form-check-label {
+    width: 100%;
+}
+
+.resume-card .card-title {
+    display: inline-block;
+    margin-bottom: 0;
+}
+
+.resume-card .btn-group {
+    margin-top: 10px;
+}

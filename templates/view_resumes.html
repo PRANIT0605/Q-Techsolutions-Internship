@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Resumes</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 1200px;
+            margin-top: 50px;
+        }
+        .resume-card {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .resume-preview {
+            height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-top: 10px;
+            background: #f8f9fa;
+        }
+        .loading-spinner {
+            display: none;
+            margin: 20px auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-4 text-center">Uploaded Resumes</h1>
+        
+        <div class="text-center">
+            <div class="spinner-border loading-spinner" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+
+        <div id="resumesContainer" class="row">
+            <!-- Resume cards will be inserted here dynamically -->
+        </div>
+
+        <h2 class="mt-4">Saved Job Description</h2>
+        <p id="job_desc_display" class="bg-light p-3 rounded">
+            No job description set.
+        </p>
+
+
+        <div class="text-center mt-4">
+            <button onclick="fetchJobDescription()" class="btn btn-secondary">Refresh Job Description</button>
+            <button id="startScreening" class="btn btn-primary" onclick="startScreening()">Enter Screening</button>
+        </div>
+
+        <script>
+            // Fetch and display job description when page loads
+            document.addEventListener("DOMContentLoaded", function() {
+                fetchJobDescription();
+            });
+
+            function fetchJobDescription() {
+                fetch('/api/job_description')
+
+                    .then(response => response.json())
+                    .then(data => {
+                        const display = document.getElementById('job_desc_display');
+                        if (data.job_description && data.job_description.length > 0) {
+                            // Format the list of keywords into a readable string
+                            display.textContent = data.job_description.join(', ');
+                        } else {
+                            display.textContent = 'No job description set.';
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching job description:', error);
+                        document.getElementById('job_desc_display').textContent = 'Error loading job description';
+                    });
+            }
+
+        </script>
+
+
+        <script>
+            function startScreening() {
+                // Get the job description
+                const jobDesc = document.getElementById('job_desc_display').innerText;
+                
+                if (!jobDesc || jobDesc === 'No job description set.') {
+                    alert('Please set a job description first');
+                    return;
+                }
+
+                // Get selected resumes
+                const selectedResumes = Array.from(document.querySelectorAll('.resume-checkbox:checked'))
+                    .map(checkbox => checkbox.value);
+
+                if (selectedResumes.length === 0) {
+                    alert('Please select at least one resume to screen');
+                    return;
+                }
+
+                // Show loading spinner
+                document.querySelector('.loading-spinner').style.display = 'block';
+
+                // Make POST request to screening endpoint
+                fetch('/screening_result', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        selected_resumes: selectedResumes
+                    })
+                })
+
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Screening failed');
+                    }
+                    return response.text();
+                })
+                .then(html => {
+                    // Replace current page with screening results
+                    document.open();
+                    document.write(html);
+                    document.close();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Screening failed. Please try again.');
+                })
+                .finally(() => {
+                    document.querySelector('.loading-spinner').style.display = 'none';
+                });
+            }
+        </script>
+
+
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Show loading spinner
+            document.querySelector('.loading-spinner').style.display = 'block';
+            
+            // Fetch and display resumes when page loads
+            fetchResumes().finally(() => {
+                document.querySelector('.loading-spinner').style.display = 'none';
+            });
+        });
+    </script>
+</body>
+</html>

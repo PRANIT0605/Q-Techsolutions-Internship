@@ -1,0 +1,7 @@
+Flask
+Werkzeug
+spacy
+nltk
+PyPDF2
+python-docx
+PyMuPDF
